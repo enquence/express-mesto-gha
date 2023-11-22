@@ -5,7 +5,8 @@ const {handleError, BadRequestError, NotFoundError} = require('../utils/error-ha
 module.exports.getCards = (req, res) => {
   cardModel.find({})
     .then(cards => {
-      if (!cards.length) throw new NotFoundError('Карточки не найдены')
+      // Для тестов надо, чтобы возвращался пустой массив
+      // if (!cards.length) throw new NotFoundError('Карточки не найдены')
       res.status(StatusCodes.OK).send(cards)
     })
     .catch((err) => handleError(err, res))
