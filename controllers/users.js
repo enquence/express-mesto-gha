@@ -34,7 +34,10 @@ module.exports.updateUser = (req, res) => {
   userModel.findByIdAndUpdate(
     req.user._id,
     {name, about},
-    {new: true})
+    {
+      new: true,
+      runValidators: true
+    })
     .then(user => {
       if (!user) throw new NotFoundError('Запрашиваемый пользователь не найден')
       res.status(StatusCodes.OK).send(user)
@@ -47,7 +50,10 @@ module.exports.updateAvatar = (req, res) => {
   userModel.findByIdAndUpdate(
     req.user._id,
     {avatar},
-    {new: true})
+    {
+      new: true,
+      runValidators: true
+    })
     .then(user => {
       if (!user) throw new NotFoundError('Запрашиваемый пользователь не найден')
       res.status(StatusCodes.OK).send(user)

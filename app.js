@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require("mongoose")
+const {StatusCodes} = require('http-status-codes')
 const bodyParser = require('body-parser');
 
 const {PORT = 3000} = process.env;
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 
 app.use('/users', require('./routes/users'))
 app.use('/cards', require('./routes/cards'))
+app.use('*', (req, res) => res.status(StatusCodes.NOT_FOUND).send({ message: 'Несуществующий эндпоинт' }))
 
 app.listen(PORT, () => {
   console.log(`Express server started on port ${PORT}`)
