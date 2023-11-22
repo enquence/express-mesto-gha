@@ -1,16 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const helmet = require('helmet');
 const { StatusCodes } = require('http-status-codes');
 const bodyParser = require('body-parser');
 
 const { PORT = 3000 } = process.env;
 
-mongoose.connect('mongodb://localhost:27017/mestodb')
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
   // eslint-disable-next-line no-console
   .then(() => console.log('MongoDB connected'));
 
 const app = express();
 
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
