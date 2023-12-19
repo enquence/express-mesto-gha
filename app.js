@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { errors } = require('celebrate');
 const { StatusCodes } = require('http-status-codes');
 const bodyParser = require('body-parser');
 const auth = require('./middlewares/auth');
@@ -27,6 +29,9 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', (req, res) => res.status(StatusCodes.NOT_FOUND).send({ message: 'Несуществующий эндпоинт' }));
+
+app.use(errors());
+app.use(require('./middlewares/error-handler'));
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
