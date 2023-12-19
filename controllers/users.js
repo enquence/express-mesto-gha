@@ -43,7 +43,11 @@ module.exports.createUser = (req, res, next) => {
       about,
       avatar,
     }))
-    .then((user) => res.status(StatusCodes.CREATED).send(user))
+    .then((user) => {
+      const { password: _, ...userOmitPass } = user;
+      // TODO почему-то не хочет работать select: false в схеме...
+      res.status(StatusCodes.CREATED).send(userOmitPass);
+    })
     .catch(next);
 };
 
@@ -58,7 +62,8 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', token, { maxAge: 3600000, httpOnly: true }).send(token);
+      // TODO Тесты не хотят работать через куки((
+      res.cookie('jwt', token, { maxAge: 3600000, httpOnly: true }).send({ token });
     })
     .catch(next);
 };

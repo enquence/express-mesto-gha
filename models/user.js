@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const bcrypt = require('bcryptjs');
-const { BadRequestError } = require('../utils/errors');
+const { AuthError } = require('../utils/errors');
 
 const UserSchema = new mongoose.Schema({
   email: {
@@ -46,10 +46,10 @@ const UserSchema = new mongoose.Schema({
 UserSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
-      if (!user) return Promise.reject(new BadRequestError('Неправильные почта или пароль'));
+      if (!user) return Promise.reject(new AuthError('Неправильные почта или пароль'));
       return bcrypt.compare(password, user.password)
         .then((matched) => {
-          if (!matched) return Promise.reject(new BadRequestError('Неправильные почта или пароль'));
+          if (!matched) return Promise.reject(new AuthError('Неправильные почта или пароль'));
           return user;
         });
     });
