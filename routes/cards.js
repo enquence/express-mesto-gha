@@ -4,6 +4,7 @@ const { celebrate, Joi } = require('celebrate');
 const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
+const regexPatterns = require('../utils/regex-patterns');
 
 const cardIdCelebrateSchema = {
   params: Joi.object().keys({
@@ -15,7 +16,7 @@ router.get('/', getCards);
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().pattern(/[(http(s)?)://(www.)?a-zA-Z0-9@:%._+~#=]{2,}\.[a-z]{2,6}\b([-a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]*#?$)/),
+    link: Joi.string().required().pattern(regexPatterns.url),
   }),
 }), createCard);
 router.delete('/:cardId', celebrate(cardIdCelebrateSchema), deleteCard);

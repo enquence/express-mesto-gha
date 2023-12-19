@@ -1,12 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 // eslint-disable-next-line import/no-extraneous-dependencies
+const { celebrate, Joi } = require('celebrate');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { errors } = require('celebrate');
 const { StatusCodes } = require('http-status-codes');
 const bodyParser = require('body-parser');
 const auth = require('./middlewares/auth');
+const regexPatterns = require('./utils/regex-patterns');
 
 const { PORT = 3000 } = process.env;
 
@@ -20,8 +23,22 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/signin', require('./controllers/users').login);
-app.use('/signup', require('./controllers/users').createUser);
+app.use('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().pattern(regexPatterns.email),
+    password: Joi.string().required(),
+  }),
+}), require('./controllers/users').login);
+
+app.use('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().pattern(regexPatterns.email),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(regexPatterns.url),
+  }),
+}), require('./controllers/users').createUser);
 
 app.use(auth);
 
