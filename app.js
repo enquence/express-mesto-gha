@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { StatusCodes } = require('http-status-codes');
 const bodyParser = require('body-parser');
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 
@@ -16,10 +17,11 @@ const app = express();
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  req.user = { _id: '655d37121c3f3309bbd83a5d' };
-  next();
-});
+
+app.use('/signin', require('./controllers/users').login);
+app.use('/signup', require('./controllers/users').createUser);
+
+app.use(auth);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
