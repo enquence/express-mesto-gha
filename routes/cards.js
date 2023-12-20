@@ -8,7 +8,7 @@ const regexPatterns = require('../utils/regex-patterns');
 
 const cardIdCelebrateSchema = {
   params: Joi.object().keys({
-    cardId: Joi.string().required().alphanum(),
+    cardId: Joi.string().required().hex().length(24),
   }),
 };
 

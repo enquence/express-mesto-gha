@@ -8,13 +8,14 @@ const regexPatterns = require('../utils/regex-patterns');
 
 const userIdCelebrateSchema = {
   params: Joi.object().keys({
-    userId: Joi.string().required().alphanum(),
+    userId: Joi.string().required().hex().length(24),
   }),
 };
 
-router.get('/', getUsers);
-router.get('/:userId', celebrate(userIdCelebrateSchema), getUserById);
 router.get('/me', getUserInfo);
+router.get('/:userId', celebrate(userIdCelebrateSchema), getUserById);
+router.get('/', getUsers);
+
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),

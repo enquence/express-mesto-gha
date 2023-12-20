@@ -43,10 +43,11 @@ module.exports.createUser = (req, res, next) => {
       about,
       avatar,
     }))
-    .then((user) => {
-      const { password: _, ...userOmitPass } = user;
-      // TODO почему-то не хочет работать select: false в схеме...
-      res.status(StatusCodes.CREATED).send(userOmitPass);
+    // eslint-disable-next-line
+    .then(({ _id, email, name, about, avatar }) => {
+      res.status(StatusCodes.CREATED).send({
+        _id, email, name, about, avatar,
+      });
     })
     .catch(next);
 };
@@ -68,15 +69,11 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserInfo = (req, res, next) => {
-  const { _id } = req.user;
-
-  return userModel.findById(_id)
-    .then((user) => {
-      res.status(StatusCodes.OK).send(user);
-    })
-    .catch(next);
-};
+module.exports.getUserInfo = (req, res, next) => userModel.findById(req.user._id)
+  .then((user) => {
+    res.status(StatusCodes.OK).send(user);
+  })
+  .catch(next);
 
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
