@@ -57,9 +57,9 @@ module.exports.login = (req, res, next) => {
   const { NODE_ENV, JWT_SECRET } = process.env;
 
   return userModel.findUserByCredentials(email, password)
-    .then(() => {
+    .then((user) => {
       const token = jwt.sign(
-        { _id: 'd285e3dceed844f902650f40' },
+        { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
