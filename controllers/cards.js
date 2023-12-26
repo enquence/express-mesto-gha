@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const cardModel = require('../models/card');
-const { AuthError, NotFoundError } = require('../utils/errors');
+const { ForbiddenError, NotFoundError } = require('../utils/errors');
 
 module.exports.getCards = (req, res, next) => {
   cardModel.find({})
@@ -20,7 +20,7 @@ module.exports.deleteCard = (req, res, next) => {
   cardModel.findById(req.params.cardId)
     .then((card) => {
       if (!card) return Promise.reject(new NotFoundError('Запрашиваемая карточка не найдена'));
-      if (!card?.owner.equals(req.user._id)) return Promise.reject(new AuthError('Невозможно удалить чужую карточку'));
+      if (!card?.owner.equals(req.user._id)) return Promise.reject(new ForbiddenError('Невозможно удалить чужую карточку'));
       return cardModel.findByIdAndDelete(req.params.cardId);
     })
     .then(() => res.status(StatusCodes.OK).send({ message: 'Карточка успешно удалена' }))
