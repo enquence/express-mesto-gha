@@ -25,8 +25,17 @@ class AuthError extends Error {
   }
 }
 
+class ForbiddenError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = StatusCodes.FORBIDDEN;
+    this.name = 'Forbidden Error';
+  }
+}
+
 module.exports = {
   NotFoundError,
   BadRequestError,
   AuthError,
+  ForbiddenError,
 };
